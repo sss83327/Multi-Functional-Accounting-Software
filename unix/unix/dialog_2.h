@@ -22,6 +22,7 @@ private Q_SLOTS:
     void on_pushButton_clicked();
 
 private:
+ //   void sort_by_price();
     Ui::Dialog_2 *ui;
     void show_item();
     QStringListModel model;

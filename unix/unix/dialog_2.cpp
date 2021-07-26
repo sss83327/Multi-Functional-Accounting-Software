@@ -12,6 +12,7 @@ Dialog_2::Dialog_2(QWidget *parent) :
     ui(new Ui::Dialog_2)
 {
     ui->setupUi(this);
+    setWindowTitle("Search");
     show_item();
 
     parent_main2 = (MainWindow*)parent;
@@ -36,23 +37,67 @@ void Dialog_2::show_item()
     int money;
     char itemname[100];
     char place[100];
+    int a_money[2000];
+    QString a_itemname[2000];
+    QString a_place[2000];
+    int row_count = 0;
+
     while (file>>money >> itemname >> place )
     {
        // qDebug() << money << "  " << itemname << "  "<< place << endl;
-       int row_count = ui->tableWidget->rowCount();
-       ui->tableWidget->insertRow(row_count);
-       ui->tableWidget->setItem(row_count,0,new QTableWidgetItem(QString::number(money)));
-       ui->tableWidget->setItem(row_count,1,new QTableWidgetItem(itemname));
-       ui->tableWidget->setItem(row_count,2,new QTableWidgetItem(place));
+
+       a_money[row_count] = money;
+       a_itemname[row_count] = QString::fromStdString(itemname);
+       a_place[row_count] = QString::fromStdString(place);
+
+//       ui->tableWidget->insertRow(row_count);
+//       ui->tableWidget->setItem(row_count,0,new QTableWidgetItem(QString::number(money)));
+//       ui->tableWidget->setItem(row_count,1,new QTableWidgetItem(itemname));
+//       ui->tableWidget->setItem(row_count,2,new QTableWidgetItem(place));
        row_count++;
     }
+    //sort_by_price();
 
-//    int row_count = ui->tableWidget->rowCount();
-//    ui->tableWidget->insertRow(row_count);
-//    ui->tableWidget->setItem(row_count,0,new QTableWidgetItem("1234"));
-//    ui->tableWidget->setItem(row_count,1,new QTableWidgetItem("123"));
-//    ui->tableWidget->setItem(row_count,2,new QTableWidgetItem("124"));
 
+
+    for ( int i = 0 ; i < row_count ; i++)
+    {
+        for( int j = i+1; j < row_count ; j++ )
+        {
+            if (a_money[i] > a_money[j])
+            {
+                QString t_place, t_itemname;
+                int t_price;
+                t_price= a_money[i];
+                t_place = a_place[i];
+                t_itemname = a_itemname[i];
+
+                a_money[i] = a_money[j];
+                a_place[i] = a_place[j];
+                a_itemname[i] = a_itemname[j];
+
+                a_money[j] = t_price;
+                a_place[j] = t_place;
+                a_itemname[j] = t_itemname;
+//                ui->tableWidget->setItem(i, 0, ui->tableWidget->item(j,0));
+//                ui->tableWidget->setItem(i, 2, ui->tableWidget->item(j,2));
+//                ui->tableWidget->setItem(i, 1, ui->tableWidget->item(j,1));
+
+
+//                ui->tableWidget->setItem(j, 0, new QTableWidgetItem(t_price));
+//                ui->tableWidget->setItem(j, 2, new QTableWidgetItem(t_place));
+//                ui->tableWidget->setItem(j, 1, new QTableWidgetItem(t_itemname));
+            }
+        }
+    }
+
+    for ( int i = 0 ; i < row_count; i++)
+    {
+        ui->tableWidget->insertRow(i);
+        ui->tableWidget->setItem(i,0,new QTableWidgetItem(QString::number(a_money[i])));
+        ui->tableWidget->setItem(i,1,new QTableWidgetItem(a_itemname[i]));
+        ui->tableWidget->setItem(i,2,new QTableWidgetItem(a_place[i]));
+    }
 
     file.close();
 }
@@ -81,7 +126,11 @@ void Dialog_2::on_buttonBox_accepted()
     query.bindValue(":cash", a_cash);
     query.bindValue(":place", a_place);
     qDebug() << query.exec();
+
+
+
     parent_main2->show_shop_data();
+
 //            int c_row = ui->tableView->currentIndex().row();
 //            QModelIndex index = model->index(c_row,0,QModelIndex());
 //        //   qDebug() << ui->tableView->model()->data(index).toString() << endl << c_row;
@@ -102,3 +151,38 @@ void Dialog_2::on_pushButton_clicked()
 {
        qDebug() << ui->tableWidget->columnWidth(0) <<  ui->tableWidget->columnWidth(1)  << ui->tableWidget->columnWidth(2) ;
 }
+
+//void Dialog_2::sort_by_price()
+//{
+// //     QString a_cash = ui->tableWidget->item(current_row,0)->text();
+//    int row_count = ui->tableWidget->rowCount();
+//    int price[2000];
+//    for ( int i =0 ; i < row_count ; i++)
+//    {
+//        price[i] = ui->tableWidget->item(i,0)->text().toInt();
+//    }
+
+//    for ( int i = 0 ; i < row_count ; i++)
+//    {
+//        for( int j = i+1; j <row_count ; j++ )
+//        {
+//            if (price[i] > price[j])
+//            {
+//                QString t_price, t_place, t_itemname;
+//                t_price=( ui->tableWidget->item(i,0)->text());
+//                t_place = ( ui->tableWidget->item(i,2)->text());
+//                t_itemname = (  ui->tableWidget->item(i,1)->text());
+
+//                ui->tableWidget->setItem(i, 0, ui->tableWidget->item(j,0));
+//                ui->tableWidget->setItem(i, 2, ui->tableWidget->item(j,2));
+//                ui->tableWidget->setItem(i, 1, ui->tableWidget->item(j,1));
+
+//                ui->tableWidget->itemChanged(
+////                ui->tableWidget->setItem(j, 0, new QTableWidgetItem(t_price));
+////                ui->tableWidget->setItem(j, 2, new QTableWidgetItem(t_place));
+////                ui->tableWidget->setItem(j, 1, new QTableWidgetItem(t_itemname));
+//            }
+//        }
+//    }
+
+//}

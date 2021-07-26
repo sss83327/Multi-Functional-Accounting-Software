@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    setWindowTitle("Easy Pay");
     db_connection();
     statistic_date();
     show_statistic_data();
@@ -194,21 +194,24 @@ void MainWindow::on_pushButton_4_clicked()  //  crawler
     QByteArray byteArray=item.toLocal8Bit ();
     char *str = byteArray.data();
     char cmd[100] = "python crawler5.py ";// + str + " new.txt";
-    char cmd3[100] = "python crawler6.py ";
-    char cmd4[100] = "python crawler7.py ";
+    //char cmd3[100] = "python crawler6.py ";
+    //char cmd4[100] = "python crawler7.py ";
 
     strcat(cmd,str);
     strcat(cmd," >> new.txt");
-    strcat(cmd3,str);
-    strcat(cmd3," >> new.txt");
-    strcat(cmd4,str);
-    strcat(cmd4," >> new.txt");
+    //strcat(cmd3,str);
+    //strcat(cmd3," >> new.txt");
+    //strcat(cmd4,str);
+    //strcat(cmd4," >> new.txt");
     //qDebug() << cmd;
     system(cmd);
-    system(cmd3);
-    system(cmd4);
+    //system(cmd3);
+    //system(cmd4);
     //system("拖把");
     file.close();
+
+    dialog_2 = new Dialog_2(this);
+    dialog_2->show();
 }
 
 
